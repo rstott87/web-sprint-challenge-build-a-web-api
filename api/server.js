@@ -5,7 +5,7 @@ const projectsRouter = require("./projects/projects-router");
 
 server.use(express.json());
 
-server.use("./api/projects", projectsRouter);
+server.use("/api/projects", projectsRouter);
 
 server.use("*", (req, res) => {
   res.status(404).json({
