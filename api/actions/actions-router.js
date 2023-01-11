@@ -57,46 +57,50 @@ router.post("/", (req, res) => {
 //   - If the request body is missing any of the required fields it responds with a status code 400.
 
 router.put("/:id", (req, res) => {
-    const { id } = req.params;
-    const { notes, description, completed } = req.body;
-    const changes = req.body;
-    
-    if (!notes || !description || !completed) {
-        res.status(400).json({
-        message: "Please provide notes, description, and completed for the action",
-        });
-    } else {
-        Actions.update(id, changes)
-        .then((action) => {
-            if (action) {
-            res.status(200).json(action);
-            } else {
-            res.status(404).json({ message: "Could not find action with given id" });
-            }
-        })
-        .catch((err) => {
-            res.status(500).json({ message: "Failed to update action" });
-            err.message;
-        });
-    }    
-})
+  const { id } = req.params;
+  const { notes, description, completed } = req.body;
+  const changes = req.body;
+
+  if (!notes || !description || !completed) {
+    res.status(400).json({
+      message: "Please provide notes, description, and completed for the action"
+    });
+  } else {
+    Actions.update(id, changes)
+      .then((action) => {
+        if (action) {
+          res.status(200).json(action);
+        } else {
+          res
+            .status(404)
+            .json({ message: "Could not find action with given id" });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({ message: "Failed to update action" });
+        err.message;
+      });
+  }
+});
 
 // - [ ] `[DELETE] /api/actions/:id`
 //   - Returns no response body.
 //   - If there is no action with the given `id` it responds with a status code 404.
 
-router.delete("/:id", (req, res) => {       
-    Actions.remove(req.params.id)
+router.delete("/:id", (req, res) => {
+  Actions.remove(req.params.id)
     .then((count) => {
-        if (count > 0) {
+      if (count > 0) {
         res.status(200).json({ message: "The action has been nuked" });
-        } else {
-        res.status(404).json({ message: "Could not find action with given id" });
-        }
+      } else {
+        res
+          .status(404)
+          .json({ message: "Could not find action with given id" });
+      }
     })
     .catch((err) => {
-        res.status(500).json({ message: "Failed to delete action" });
-        err.message;
+      res.status(500).json({ message: "Failed to delete action" });
+      err.message;
     });
 });
 

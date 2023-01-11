@@ -1,5 +1,6 @@
 // Write your "projects" router here!
 
+const e = require("express");
 const express = require("express");
 
 const router = express.Router();
@@ -52,30 +53,27 @@ router.post("/", (req, res) => {
 //   - If there is no project with the given `id` it responds with a status code 404.
 //   - If the request body is missing any of the required fields it responds with a status code 400.
 
-router.put("/:id", (req, res) => {
+router.put("/:id",  (req, res) => {
   const { id } = req.params;
-  const { name, description } = req.body;
+  const { name, description, completed} = req.body;
   const changes = req.body;
 
-  if (!name || !description) {
-    res.status(400)
-      .json({ message: "Please provide title and contents for the project." });
-  } 
-  else {
-      Projects.update(id, changes)
-      .then((project) => {
-        if (!project) {
+  if (!name || !description || completed===undefined)  {
+    res.status(400).json({ message: "Please provide name and description" });
+  } else {
+    Projects.update(id, changes)
+      .then((updated) => {
+        if (updated) {
+          res.status(200).json(updated);
+        } else {
           res
             .status(404)
             .json({ message: "Could not find project with given id" });
-        } else {
-          res.json(project);
         }
       })
       .catch((err) => {
-        res
-          .status(400)
-          .json({ message: "Failed to update project", err: err.message });
+        res.status(400).json({ message: "Failed to update project" });
+        err.message;
       });
   }
 });
